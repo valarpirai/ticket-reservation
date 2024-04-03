@@ -9,5 +9,5 @@ public class ReservationPojo {
     private String from;
     private String to;
     private float pricePaid;
-    private UserPojo user;
+    private UserPojo userPojo;
 }
