@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class ReservationPojo {
     private String from;
     private String to;
-    private float paidAmount;
+    private long paidAmount;
     private LocalDate date;
     private UserPojo userPojo;
 }

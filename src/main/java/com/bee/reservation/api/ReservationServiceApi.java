@@ -1,15 +1,18 @@
 package com.bee.reservation.api;
 
+import com.bee.reservation.exception.NotFoundException;
+import com.bee.reservation.exception.SeatNotAvailableException;
 import com.bee.reservation.model.Reservation;
 import com.bee.reservation.model.Schedule;
 import com.bee.reservation.model.User;
 import com.bee.reservation.pojo.ReservationPojo;
 import com.bee.reservation.pojo.UserPojo;
 
+import java.util.Set;
+
 public abstract class ReservationServiceApi {
 
-    public Reservation bookTicket(ReservationPojo reservationPojo) { return new Reservation(); }
+    public Reservation bookTicket(ReservationPojo reservationPojo) throws NotFoundException, SeatNotAvailableException { return new Reservation(); }
 
-    Schedule findOrGetSchedule(ReservationPojo reservationPojo) { return new Schedule(); }
-    User findOrGetUserByEmail(UserPojo userPojo) { return new User(); }
+    Set<Schedule> findSchedule(ReservationPojo reservationPojo) throws NotFoundException { return new Schedule(); }
 }

@@ -1,6 +1,7 @@
 package com.bee.reservation.service;
 
 import com.bee.reservation.api.UserServiceApi;
+import com.bee.reservation.exception.NotFoundException;
 import com.bee.reservation.model.User;
 import com.bee.reservation.pojo.UserPojo;
 import com.bee.reservation.repository.UserRepository;

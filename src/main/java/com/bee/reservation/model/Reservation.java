@@ -30,8 +30,10 @@ public class Reservation {
     @Column(updatable = false)
     private LocalDateTime bookedAt;
 
+    private LocalDate date;
+
     private String section;
-    private String seatNo;
+    private int seatNo;
 
     @ManyToOne
     @JoinColumn(name="train_id", nullable=false)

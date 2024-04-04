@@ -31,7 +31,7 @@ public class Schedule {
     @JoinColumn(name="train_id", nullable=false)
     private Train train;
 
-    public int maxSeat() {
+    public int maxSeatsPerSection() {
         return train.getMaxSeatPerSection();
     }
 }
