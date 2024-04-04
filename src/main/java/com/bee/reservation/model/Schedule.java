@@ -24,10 +24,16 @@ public class Schedule {
 
     private String endStation;
 
+//    Available seat count
+
     @Column(name = "train_id", insertable=false, updatable=false)
     private Long trainId;
 
     @ManyToOne
     @JoinColumn(name="train_id", nullable=false)
     private Train train;
+
+    public int maxSeat() {
+        return train.getMaxSeats();
+    }
 }
