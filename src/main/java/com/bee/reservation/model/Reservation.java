@@ -33,7 +33,7 @@ public class Reservation {
     private LocalDate date;
 
     private String section;
-    private int seatNo;
+    private int seatNumber;
 
     @ManyToOne
     @JoinColumn(name="train_id", nullable=false)

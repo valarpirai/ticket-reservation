@@ -1,5 +1,7 @@
 package com.bee.reservation.controller;
 
+import com.bee.reservation.exception.NotFoundException;
+import com.bee.reservation.exception.SeatNotAvailableException;
 import com.bee.reservation.model.Reservation;
 import com.bee.reservation.pojo.ReservationPojo;
 import com.bee.reservation.repository.ReservationRepository;
@@ -25,9 +27,12 @@ public class ReservationController {
      */
     @PostMapping("/reserve")
     ResponseEntity bookTicket(@RequestBody ReservationPojo reservationPojo) {
-        reservationService.bookTicket(reservationPojo);
-//        Seats not available
-//        Train not available
+        try {
+            reservationService.bookTicket(reservationPojo);
+        } catch (NotFoundException | SeatNotAvailableException e) {
+            //        Seats not available
+            //        Train not available
+        }
         return new ResponseEntity(null, HttpStatus.CREATED);
     }
 

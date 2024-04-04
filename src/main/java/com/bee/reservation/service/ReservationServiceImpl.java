@@ -90,7 +90,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
                     reservation.setSection(TrainSections.SECTION_B.name());
                 }
 
-                reservation.setSeatNo(seatNo);
+                reservation.setSeatNumber(seatNo);
                 reservation.setSchedule(schedule);
                 reservation.setTrain(schedule.getTrain());
                 break;
@@ -110,7 +110,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
      * @param maxSeatPerSection
      * @return
      */
-    private int findNextAvailableSeat(List<Reservation> reservations, TrainSections section, maxSeatPerSection) {
+    private int findNextAvailableSeat(List<Reservation> reservations, TrainSections section, int maxSeatPerSection) {
 //        Find max seat number
 //            IF count is not matching max seat number
         //        find missing number and use it
@@ -119,7 +119,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         var seatNos = reservations
                 .stream()
                 .filter(reservation -> reservation.getSection().equalsIgnoreCase(section.name()))
-                .map(Reservation::getSeatNo)
+                .map(Reservation::getSeatNumber)
                 .collect(Collectors.toList());
 
         // No Seat available
