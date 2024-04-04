@@ -25,7 +25,7 @@ public class Reservation {
     @Column(name = "user_id", insertable=false, updatable=false)
     private Long userId;
 
-    private Long price;
+    private String paidAmount;
 
     @Column(updatable = false)
     private LocalDateTime bookedAt;
@@ -35,15 +35,15 @@ public class Reservation {
     private String section;
     private int seatNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="train_id", nullable=false)
     private Train train;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="schedule_id", nullable=false)
     private Schedule schedule;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable=false)
     private User user;
 }

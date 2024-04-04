@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     int countByDateAndScheduleId(LocalDate date, Long scheduleId);
-    List<Reservation> findReservationsByDateAndScheduleId(LocalDate date, Long scheduleId);
+    List<Reservation> findByDateAndScheduleId(LocalDate date, Long scheduleId);
 }

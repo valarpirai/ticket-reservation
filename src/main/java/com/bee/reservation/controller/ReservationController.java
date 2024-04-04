@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("api/v1")
 public class ReservationController {
@@ -27,19 +29,22 @@ public class ReservationController {
      */
     @PostMapping("/reserve")
     ResponseEntity bookTicket(@RequestBody ReservationPojo reservationPojo) {
+        Reservation reservation = null;
         try {
-            reservationService.bookTicket(reservationPojo);
+            reservation = reservationService.bookTicket(reservationPojo);
         } catch (NotFoundException | SeatNotAvailableException e) {
-            //        Seats not available
-            //        Train not available
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(null, HttpStatus.CREATED);
+        return new ResponseEntity(reservationService.mapToPojo(reservation), HttpStatus.CREATED);
     }
 
     @GetMapping("/reservation/{reservationId}")
     ResponseEntity getTicketDetails(@PathVariable Long reservationId) {
-        reservationService.getTicketReservationDetails(reservationId);
-        return new ResponseEntity(null, HttpStatus.OK);
+        Optional<Reservation> reservation = reservationService.getTicketReservationDetails(reservationId);
+        if(reservation.isEmpty()) {
+            return new ResponseEntity("Reservation not found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(reservationService.mapToPojo(reservation.get()), HttpStatus.OK);
     }
 
     @DeleteMapping("/reserve/{reservationId}")

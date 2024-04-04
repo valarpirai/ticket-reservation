@@ -32,14 +32,17 @@ public class UserServiceImpl extends UserServiceApi {
     public List<UserPojo> getAllUsers() {
         List<UserPojo> users = new ArrayList<UserPojo>();
         for(User user: userRepository.findAll()) {
-            users.add(new UserPojo(
-                    user.getId(),
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getEmail())
-            );
+            users.add(mapToPojo(user));
         }
         return users;
+    }
+
+    public UserPojo mapToPojo(User user) {
+        return new UserPojo(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail());
     }
 
     public boolean userExists(String email) {

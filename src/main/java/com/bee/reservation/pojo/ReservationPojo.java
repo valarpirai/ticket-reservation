@@ -10,7 +10,13 @@ import java.time.LocalDate;
 public class ReservationPojo {
     private String from;
     private String to;
-    private long paidAmount;
+    private String paidAmount;
     private LocalDate date;
-    private UserPojo userPojo;
+    private UserPojo user;
+
+    private long trainId;
+    private String section;
+    private int seatNumber;
+
+    public ReservationPojo() {}
 }
