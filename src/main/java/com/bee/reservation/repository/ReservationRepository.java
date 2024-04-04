@@ -13,5 +13,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     int countByDateAndScheduleId(LocalDate date, Long scheduleId);
 
     @Query("select r.id, r.section, r.seat_no, r.train_id from Reservation r where date = :date and schedule_id = :scheduleId")
-    List<Reservation> findSectionAndSeatsByDateAndScheduleId(LocalDate date, Long scheduleId);
+    List<Reservation> findReservationsByDateAndScheduleId(LocalDate date, Long scheduleId);
 }

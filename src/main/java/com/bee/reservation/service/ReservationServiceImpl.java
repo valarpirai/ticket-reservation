@@ -78,7 +78,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
 
         for (Schedule schedule: schedules) {
             var maxSeats = schedule.maxSeatsPerSection() * 2;
-            List<Reservation> reservations = reservationRepository.findSectionAndSeatsByDateAndScheduleId(reservationPojo.getDate(), schedule.getId());
+            List<Reservation> reservations = reservationRepository.findReservationsByDateAndScheduleId(reservationPojo.getDate(), schedule.getId());
             if(reservations.size() < maxSeats) {
                 // Check whether the section seat is available
                 // Find next available seat number
