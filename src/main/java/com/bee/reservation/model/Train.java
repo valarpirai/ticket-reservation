@@ -1,5 +1,6 @@
 package com.bee.reservation.model;
 
+import com.bee.reservation.constants.TrainSections;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,12 @@ public class Train {
     private Long id;
     private String name;
 
-    private Integer maxSeats;
+    private int maxSeatPerSection;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "train")
     private List<Schedule> scheduleList;
+
+    public TrainSections[] getSections() {
+        return TrainSections.values();
+    }
 }

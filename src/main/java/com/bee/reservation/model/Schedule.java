@@ -17,12 +17,10 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime departureTime;
-    private LocalDateTime arrivalTime;
-
     private String startStation;
-
     private String endStation;
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
 
 //    Available seat count
 
@@ -34,6 +32,6 @@ public class Schedule {
     private Train train;
 
     public int maxSeat() {
-        return train.getMaxSeats();
+        return train.getMaxSeatPerSection();
     }
 }

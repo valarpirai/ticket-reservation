@@ -30,6 +30,7 @@ public class Reservation {
     @Column(updatable = false)
     private LocalDateTime bookedAt;
 
+    private String section;
     private String seatNo;
 
     @ManyToOne
