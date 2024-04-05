@@ -52,10 +52,10 @@ public class UserServiceImpl extends UserServiceApi {
     public Optional<User> getUser(Long userId) {
         return userRepository.findById(userId);
     }
-    public User findOrGetUserByEmail(UserPojo userPojo) {
+    public User findOrCreateUser(UserPojo userPojo) {
         var userRecord = userRepository.findByEmail(userPojo.getEmail());
         if (userRecord.isPresent())
             return userRecord.get();
-        return new User(userPojo.getFirstName(), userPojo.getLastName(), userPojo.getEmail());
+        return userRepository.save(new User(userPojo.getFirstName(), userPojo.getLastName(), userPojo.getEmail()));
     }
 }

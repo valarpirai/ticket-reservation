@@ -11,7 +11,10 @@ public class ReservationServiceImplTest {
 
     @Test
     void reserveTicket() {
-
+//        reserve
+//        reserve all
+//        random Cancel and reserve
+//        cancel all and reserver
     }
 
     @Test
@@ -19,5 +22,4 @@ public class ReservationServiceImplTest {
 
     }
 
-    @Test
 }

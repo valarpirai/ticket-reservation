@@ -40,7 +40,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
 
         findAndAssignSeat(reservation, reservationPojo);
 
-        reservation.setUser(userService.findOrGetUserByEmail(userPojo));
+        reservation.setUser(userService.findOrCreateUser(userPojo));
         reservation.setBookedAt(LocalDateTime.now());
         reservation.setPaidAmount(reservationPojo.getPaidAmount());
 //        Find train name by using from and To
@@ -52,6 +52,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
 
     public ReservationPojo mapToPojo(Reservation reservation) {
         ReservationPojo reservationPojo = new ReservationPojo();
+        reservationPojo.setId(reservation.getId());
         reservationPojo.setFrom(reservation.getSchedule().getStartStation());
         reservationPojo.setTo(reservation.getSchedule().getEndStation());
         reservationPojo.setSection(reservation.getSection());
@@ -142,9 +143,10 @@ public class ReservationServiceImpl extends ReservationServiceApi {
             return -1;
         } else if (seatNos.size() == 0) {
             return 1;
-        } else if (seatNos.get(seatNos.size() - 1) < maxSeatPerSection) {
-            return seatNos.get(seatNos.size() - 1) + 1;
+        } else if (Collections.max(seatNos) < maxSeatPerSection) {
+            return Collections.max(seatNos) + 1;
         } else {
+            // Return available seat from middle (cancelled seats)
             int xor = 0, i = 0;
             for (; i < seatNos.size(); i++) {
                 xor = xor ^ i ^ seatNos.get(i);

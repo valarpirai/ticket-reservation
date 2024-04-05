@@ -14,6 +14,7 @@ public class ReservationPojo {
     private LocalDate date;
     private UserPojo user;
 
+    private long id;
     private long trainId;
     private String section;
     private int seatNumber;

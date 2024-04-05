@@ -27,7 +27,7 @@ public class ReservationController {
      *  first and last name, email address
      *
      */
-    @PostMapping("/reserve")
+    @PostMapping("/reservation")
     ResponseEntity bookTicket(@RequestBody ReservationPojo reservationPojo) {
         Reservation reservation = null;
         try {
@@ -47,7 +47,7 @@ public class ReservationController {
         return new ResponseEntity(reservationService.mapToPojo(reservation.get()), HttpStatus.OK);
     }
 
-    @DeleteMapping("/reserve/{reservationId}")
+    @DeleteMapping("/reservation/{reservationId}")
     ResponseEntity bookTicket(@PathVariable Long reservationId) {
         reservationService.deleteReservation(reservationId);
         return new ResponseEntity(null, HttpStatus.OK);
