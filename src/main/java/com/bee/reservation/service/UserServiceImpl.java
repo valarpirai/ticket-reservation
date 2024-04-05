@@ -1,6 +1,7 @@
 package com.bee.reservation.service;
 
 import com.bee.reservation.api.UserServiceApi;
+import com.bee.reservation.exception.UserAlreadyExistsException;
 import com.bee.reservation.model.User;
 import com.bee.reservation.pojo.UserPojo;
 import com.bee.reservation.repository.UserRepository;
@@ -17,9 +18,9 @@ public class UserServiceImpl extends UserServiceApi {
     @Autowired
     private UserRepository userRepository;
 
-    public User createUser(UserPojo userPojo) throws Exception {
+    public User createUser(UserPojo userPojo) throws UserAlreadyExistsException {
         if (userExists(userPojo.getEmail()))
-            throw new Exception("User with email already exists");
+            throw new UserAlreadyExistsException("User with email already exists");
         User user = new User();
         user.setFirstName(userPojo.getFirstName());
         user.setLastName(userPojo.getLastName());
@@ -37,14 +38,6 @@ public class UserServiceImpl extends UserServiceApi {
         return users;
     }
 
-    public UserPojo mapToPojo(User user) {
-        return new UserPojo(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail());
-    }
-
     public boolean userExists(String email) {
         return userRepository.existsByEmail(email);
     }
@@ -57,5 +50,13 @@ public class UserServiceImpl extends UserServiceApi {
         if (userRecord.isPresent())
             return userRecord.get();
         return userRepository.save(new User(userPojo.getFirstName(), userPojo.getLastName(), userPojo.getEmail()));
+    }
+
+    public UserPojo mapToPojo(User user) {
+        return new UserPojo(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail());
     }
 }
