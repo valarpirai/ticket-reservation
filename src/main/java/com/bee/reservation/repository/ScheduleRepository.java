@@ -8,5 +8,5 @@ import java.util.Set;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    Set<Schedule> findByStartStationAndEndStation(String startStation, String endStation);
+    Set<Schedule> findByFromStationAndToStation(String fromStation, String toStation);
 }

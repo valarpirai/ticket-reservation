@@ -38,6 +38,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    @Transactional
     public Reservation bookTicket(ReservationPojo reservationPojo) throws NotFoundException, SeatNotAvailableException {
 //        Validate Request Payload
         var userPojo = reservationPojo.getUser();
@@ -56,8 +57,8 @@ public class ReservationServiceImpl extends ReservationServiceApi {
     public ReservationPojo mapToPojo(Reservation reservation) {
         ReservationPojo reservationPojo = new ReservationPojo();
         reservationPojo.setReservationId(reservation.getId());
-        reservationPojo.setFrom(reservation.getSchedule().getStartStation());
-        reservationPojo.setTo(reservation.getSchedule().getEndStation());
+        reservationPojo.setFrom(reservation.getSchedule().getFromStation());
+        reservationPojo.setTo(reservation.getSchedule().getToStation());
         reservationPojo.setSection(reservation.getSection());
         reservationPojo.setSeatNumber(reservation.getSeatNumber());
         reservationPojo.setDate(reservation.getDate());
@@ -83,6 +84,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         return reservationPojos;
     }
 
+    @Transactional
     public ReservationPojo changeAllottedUserSeat(Long reservationId, int newSeatNumber)
             throws NotFoundException, SeatNotAvailableException
     {
@@ -90,7 +92,12 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         if(reservationOpt.isEmpty()) {
             throw new NotFoundException("Reservation not found");
         }
+
         Reservation reservation = reservationOpt.get();
+        if (newSeatNumber == reservation.getSeatNumber()) {
+            return mapToPojo(reservation);
+        }
+
         if (newSeatNumber > reservation.getSchedule().maxSeatsPerSection()) {
             throw new SeatNotAvailableException("Requested seat is not present");
         }
@@ -116,7 +123,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
     }
 
     Set<Schedule> findSchedule(ReservationPojo reservationPojo) throws NotFoundException {
-        var schedules = scheduleRepository.findByStartStationAndEndStation(reservationPojo.getFrom(), reservationPojo.getTo());
+        var schedules = scheduleRepository.findByFromStationAndToStation(reservationPojo.getFrom(), reservationPojo.getTo());
         if(schedules.isEmpty())
             throw new NotFoundException("Train not found for the stations");
         return schedules;

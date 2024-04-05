@@ -13,13 +13,13 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 public class ReservationPojo {
+    private long reservationId;
     private String from;
     private String to;
     private String paidAmount;
     private LocalDate date;
     private UserPojo user;
 
-    private long reservationId;
     private TrainPojo train;
     private String section;
     private int seatNumber;

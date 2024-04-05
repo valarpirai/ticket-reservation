@@ -21,7 +21,7 @@ INSERT INTO trains(name, max_seat_per_section) VALUES
 ('Eurail #6', 20);
 
 -- Insert Schedules
-INSERT INTO schedules(start_station, end_station, departure_time, arrival_time, train_id) VALUES
+INSERT INTO schedules(from_station, to_station, departure_time, arrival_time, train_id) VALUES
 ('London', 'France', '10:00:00', '12:40:00', 1),
 ('London', 'Belgium', '10:00:00', '14:59:00', 2),
 ('London', 'Germany', '09:00:00', '15:30:00', 3),
