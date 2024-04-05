@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class UserServiceImplTest {
 
     @Test
     void testCreateNewUser() throws Exception {
-        var user = userService.createUser(getUserPojo());
+        var user = userService.createUser(buildUserPojo());
         assertThat(user, is(notNullValue()));
         assertTrue(user.getId() > 0);
         assertEquals("test", user.getFirstName());
@@ -43,27 +42,27 @@ public class UserServiceImplTest {
 
     @Test
     void testCreateNewUserThrowsError() throws UserAlreadyExistsException {
-        userService.createUser(getUserPojo());
+        userService.createUser(buildUserPojo());
 
         Exception exception = assertThrows(UserAlreadyExistsException.class, () -> {
-            userService.createUser(getUserPojo());
+            userService.createUser(buildUserPojo());
         });
         assertTrue(exception.getMessage().contains("User with email already exists"));
     }
 
     @Test
     void testFindOrCreateUser() {
-        var user = userService.findOrCreateUser(getUserPojo());
+        var user = userService.findOrCreateUser(buildUserPojo());
         assertTrue(user.getId() > 0);
         assertEquals("test", user.getFirstName());
 
-        var user1 = userService.findOrCreateUser(getUserPojo());
+        var user1 = userService.findOrCreateUser(buildUserPojo());
         assertEquals(user1.getId(), user.getId());
     }
 
     @Test
     void testUserExists() {
-        userService.findOrCreateUser(getUserPojo());
+        userService.findOrCreateUser(buildUserPojo());
 
         var userExists = userService.userExists("test@hotmail.com");
         assertTrue(userExists);
@@ -71,7 +70,7 @@ public class UserServiceImplTest {
 
     @Test
     void testGetUser() {
-        var user = userService.findOrCreateUser(getUserPojo());
+        var user = userService.findOrCreateUser(buildUserPojo());
 
         var user1 = userService.getUser(user.getId());
         assertThat(user1, is(notNullValue()));
@@ -82,14 +81,14 @@ public class UserServiceImplTest {
         List<UserPojo> users =  userService.getAllUsers();
         assertTrue(users.size() == 0);
 
-        var user = userService.findOrCreateUser(getUserPojo());
+        var user = userService.findOrCreateUser(buildUserPojo());
 
         users =  userService.getAllUsers();
         assertTrue(users.size() == 1);
         assertEquals(users.get(0).getId(), user.getId());
     }
 
-    private UserPojo getUserPojo() {
+    private UserPojo buildUserPojo() {
         var pojo = new UserPojo();
         pojo.setFirstName("test");
         pojo.setLastName("user");

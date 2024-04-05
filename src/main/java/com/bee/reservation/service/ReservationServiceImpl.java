@@ -38,6 +38,13 @@ public class ReservationServiceImpl extends ReservationServiceApi {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    /**
+     * Book Train ticket
+     * @param reservationPojo
+     * @return Ticket reservation details
+     * @throws NotFoundException
+     * @throws SeatNotAvailableException
+     */
     @Transactional
     public Reservation bookTicket(ReservationPojo reservationPojo) throws NotFoundException, SeatNotAvailableException {
 //        Validate Request Payload
@@ -54,27 +61,22 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         return reservation;
     }
 
-    public ReservationPojo mapToPojo(Reservation reservation) {
-        ReservationPojo reservationPojo = new ReservationPojo();
-        reservationPojo.setReservationId(reservation.getId());
-        reservationPojo.setFrom(reservation.getSchedule().getFromStation());
-        reservationPojo.setTo(reservation.getSchedule().getToStation());
-        reservationPojo.setSection(reservation.getSection());
-        reservationPojo.setSeatNumber(reservation.getSeatNumber());
-        reservationPojo.setDate(reservation.getDate());
-        reservationPojo.setDepartureTime(reservation.getSchedule().getDepartureTime());
-        reservationPojo.setArrivalTime(reservation.getSchedule().getArrivalTime());
-        reservationPojo.setPaidAmount(reservation.getPaidAmount());
-        reservationPojo.setTrain(trainService.mapToPojo(reservation.getTrain()));
-        reservationPojo.setUser(userService.mapToPojo(reservation.getUser()));
-        reservationPojo.setBookedAt(reservation.getBookedAt());
-        return reservationPojo;
-    }
-
+    /**
+     * Get single Ticket Reservation by ID
+     * @param reservationId
+     * @return Optional Reservation
+     */
     public Optional<Reservation> getTicketReservationDetail(Long reservationId) {
         return reservationRepository.findById(reservationId);
     }
 
+    /**
+     * Get all reserved Tickets for Train-Section-Date
+     * @param trainId
+     * @param sectionName
+     * @param date
+     * @return Tickets reservation list
+     */
     public List<ReservationPojo> getTicketReservations(long trainId, String sectionName, LocalDate date) {
         List<Reservation> reservations = reservationRepository.findByTrainIdAndSectionAndDate(trainId, sectionName, date);
         List<ReservationPojo> reservationPojos = new ArrayList<ReservationPojo>();
@@ -84,6 +86,14 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         return reservationPojos;
     }
 
+    /**
+     * Change the Seat Number for the reservationId. It will change the seat only if it is seat available on Train-Section-Date combination
+     * @param reservationId
+     * @param newSeatNumber
+     * @return
+     * @throws NotFoundException
+     * @throws SeatNotAvailableException
+     */
     @Transactional
     public ReservationPojo changeAllottedUserSeat(Long reservationId, int newSeatNumber)
             throws NotFoundException, SeatNotAvailableException
@@ -117,29 +127,59 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         return mapToPojo(reservation);
     }
 
+    /**
+     * Deletes the reservation. removeById combination of select and delete query
+     * @param reservationId
+     * @return Returns count of deleted records
+     */
     @Transactional
     public Long deleteReservation(Long reservationId) {
         return reservationRepository.removeById(reservationId);
     }
 
-    Set<Schedule> findSchedule(ReservationPojo reservationPojo) throws NotFoundException {
+    /**
+     * Converts Reservation -> Pojo Object
+     * @param reservation
+     * @return Pojo Object for the Reservation
+     */
+    public ReservationPojo mapToPojo(Reservation reservation) {
+        ReservationPojo reservationPojo = new ReservationPojo();
+        reservationPojo.setReservationId(reservation.getId());
+        reservationPojo.setFrom(reservation.getSchedule().getFromStation());
+        reservationPojo.setTo(reservation.getSchedule().getToStation());
+        reservationPojo.setSection(reservation.getSection());
+        reservationPojo.setSeatNumber(reservation.getSeatNumber());
+        reservationPojo.setDate(reservation.getDate());
+        reservationPojo.setDepartureTime(reservation.getSchedule().getDepartureTime());
+        reservationPojo.setArrivalTime(reservation.getSchedule().getArrivalTime());
+        reservationPojo.setPaidAmount(reservation.getPaidAmount());
+        reservationPojo.setTrain(trainService.mapToPojo(reservation.getTrain()));
+        reservationPojo.setUser(userService.mapToPojo(reservation.getUser()));
+        reservationPojo.setBookedAt(reservation.getBookedAt());
+        return reservationPojo;
+    }
+
+    private Set<Schedule> findSchedule(ReservationPojo reservationPojo) throws NotFoundException {
         var schedules = scheduleRepository.findByFromStationAndToStation(reservationPojo.getFrom(), reservationPojo.getTo());
         if(schedules.isEmpty())
             throw new NotFoundException("Train not found for the stations");
         return schedules;
     }
 
+    /**
+     * Find the schedules for the From and To station.
+     *
+     * @param reservation
+     * @param reservationPojo
+     * @throws NotFoundException
+     * @throws SeatNotAvailableException
+     */
     private void findAndAssignSeat(Reservation reservation, ReservationPojo reservationPojo) throws NotFoundException, SeatNotAvailableException {
         var schedules = findSchedule(reservationPojo);
-        logger.info("findAndAssignSeat -- schedules: " + schedules.size());
         for (Schedule schedule: schedules) {
             var maxSeats = schedule.maxSeatsPerSection() * 2;
-            logger.info("reservations: Date:" + reservationPojo.getDate() + ", Schedule: " + schedule.getId());
             List<Reservation> reservations = reservationRepository.findByDateAndScheduleId(reservationPojo.getDate(), schedule.getId());
-            logger.info("reservations: " + reservations.size());
             if(reservations.size() < maxSeats) {
-                // Check whether the section seat is available
-                // Find next available seat number
                 int seatNo = findNextAvailableSeat(reservations, TrainSections.SECTION_A, schedule.maxSeatsPerSection());
                 if (seatNo != -1) {
                     reservation.setSection(TrainSections.SECTION_A.name());
@@ -194,4 +234,5 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         // Return next available seat
         return Collections.max(seatNos) + 1;
     }
+
 }

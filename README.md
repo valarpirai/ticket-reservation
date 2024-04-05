@@ -19,15 +19,15 @@ The user is allocated a seat in the train. Assume the train has only 2 sections,
 - If a requirement is ambiguous or unclear, use your best judgment to interpret it and make what you believe are reasonable assumptions
 - When the assignment is ready, send the console output from your app-server and app-client. You can also include your reasonable assumptions and known limitations.
 
-## Assumptions
-- Trains have only start and end stations. Intermediate stations not supported
+## Assumptions & Limitations
+- H2 In-memory DB is used (No data persistent). Schema will be created on app startup
+- Default Train, Schedule and User are created during application startup
+- Trains have only start and end stations. Intermediate train stations are not supported
 - Each train runs once per day
 - Train will have only 2 sections
 - Each section has fixed max Seats
-- When user tries to book/reserve ticket, we will check the available trains for the START and END station.
-  - Then, check if the seats available in any train and book it. If no seats/train available, then error will be thrown
-- Single User can book N number of Tickets (No limit)
-- Request Payloads are valid. (Spring boot default payload validation available)
+- A Single User can book N number of Tickets (Virtually no limit)
+- Request Payloads are valid (Spring boot default payload validation available)
 - Supported Date format 2024-04-01 (yyyy-MM-dd)
 - Authentication & Authorization not enabled (APIs are publicly accessible)
 - 
