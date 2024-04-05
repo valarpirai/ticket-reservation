@@ -91,16 +91,21 @@ public class ReservationServiceImpl extends ReservationServiceApi {
             throw new NotFoundException("Reservation not found");
         }
         Reservation reservation = reservationOpt.get();
-        boolean seatAvailable = reservationRepository.existsByTrainIdAndSectionAndDateAndSeatNumber(
+        if (newSeatNumber > reservation.getSchedule().maxSeatsPerSection()) {
+            throw new SeatNotAvailableException("Requested seat is not present");
+        }
+
+        boolean seatAlreadyBooked = reservationRepository.existsByTrainIdAndSectionAndDateAndSeatNumber(
                 reservation.getTrainId(),
                 reservation.getSection(),
                 reservation.getDate(),
                 newSeatNumber);
-        if(!seatAvailable) {
-            throw new SeatNotAvailableException("Requested seat not available");
+        if(seatAlreadyBooked) {
+            throw new SeatNotAvailableException("Requested seat is not available. Try different seat");
         } else {
             reservation.setSeatNumber(newSeatNumber);
             reservation.setBookedAt(LocalDateTime.now());
+            reservationRepository.save(reservation);
         }
         return mapToPojo(reservation);
     }
