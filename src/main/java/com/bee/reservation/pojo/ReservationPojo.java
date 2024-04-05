@@ -19,8 +19,7 @@ public class ReservationPojo {
     private UserPojo user;
 
     private long reservationId;
-    private long trainId;
-    private String trainName;
+    private TrainPojo train;
     private String section;
     private int seatNumber;
     private LocalTime departureTime;

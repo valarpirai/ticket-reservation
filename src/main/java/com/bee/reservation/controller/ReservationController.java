@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -28,31 +30,33 @@ public class ReservationController {
      *
      */
     @PostMapping("/reservation")
-    ResponseEntity bookTicket(@RequestBody ReservationPojo reservationPojo) {
-        Reservation reservation = null;
-        try {
-            reservation = reservationService.bookTicket(reservationPojo);
-        } catch (NotFoundException | SeatNotAvailableException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+    ResponseEntity bookTicket(@RequestBody ReservationPojo reservationPojo) throws NotFoundException, SeatNotAvailableException {
+        Reservation reservation = reservationService.bookTicket(reservationPojo);
         return new ResponseEntity(reservationService.mapToPojo(reservation), HttpStatus.CREATED);
     }
 
     @GetMapping("/reservation/{reservationId}")
-    ResponseEntity getTicketDetails(@PathVariable Long reservationId) {
+    ResponseEntity getTicketDetails(@PathVariable Long reservationId) throws NotFoundException {
         Optional<Reservation> reservation = reservationService.getTicketReservationDetails(reservationId);
         if(reservation.isEmpty()) {
-            return new ResponseEntity("Reservation not found", HttpStatus.NOT_FOUND);
+            throw new NotFoundException("Reservation not found");
         }
         return new ResponseEntity(reservationService.mapToPojo(reservation.get()), HttpStatus.OK);
     }
 
+    @GetMapping("/reservation/{trainId}/{sectionName}")
+    ResponseEntity getSeatBookingOfSection(@PathVariable long trainId, @PathVariable String sectionName, @RequestParam LocalDate date) {
+        List<Reservation> reservations = reservationService.getTicketReservationsForSection(trainId, sectionName, date);
+
+        return new ResponseEntity(reservations, HttpStatus.OK);
+    }
+
     @DeleteMapping("/reservation/{reservationId}")
-    ResponseEntity bookTicket(@PathVariable Long reservationId) {
-        long deletedId = reservationService.deleteReservation(reservationId);
-        if (deletedId != 0)
-            return new ResponseEntity("Ok", HttpStatus.OK);
-        else
-            return new ResponseEntity("", HttpStatus.NOT_FOUND);
+    ResponseEntity bookTicket(@PathVariable Long reservationId) throws NotFoundException {
+        long deletedCount = reservationService.deleteReservation(reservationId);
+        if (deletedCount == 0) {
+            throw new NotFoundException("Reservation not found");
+        }
+        return new ResponseEntity("Success", HttpStatus.OK);
     }
 }

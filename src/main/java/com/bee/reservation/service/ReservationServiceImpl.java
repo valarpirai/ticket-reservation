@@ -6,6 +6,7 @@ import com.bee.reservation.exception.NotFoundException;
 import com.bee.reservation.exception.SeatNotAvailableException;
 import com.bee.reservation.model.Reservation;
 import com.bee.reservation.model.Schedule;
+import com.bee.reservation.model.Train;
 import com.bee.reservation.pojo.ReservationPojo;
 import com.bee.reservation.repository.ReservationRepository;
 import com.bee.reservation.repository.ScheduleRepository;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,14 +27,15 @@ public class ReservationServiceImpl extends ReservationServiceApi {
 
     private final Logger logger = LoggerFactory.getLogger(ReservationServiceImpl.class);
     @Autowired
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
+
+    @Autowired
+    private TrainServiceImpl trainService;
 
     @Autowired
     private ReservationRepository reservationRepository;
     @Autowired
     private ScheduleRepository scheduleRepository;
-    @Autowired
-    private TrainRepository trainRepository;
 
     public Reservation bookTicket(ReservationPojo reservationPojo) throws NotFoundException, SeatNotAvailableException {
 //        Validate Request Payload
@@ -62,8 +65,7 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         reservationPojo.setDepartureTime(reservation.getSchedule().getDepartureTime());
         reservationPojo.setArrivalTime(reservation.getSchedule().getArrivalTime());
         reservationPojo.setPaidAmount(reservation.getPaidAmount());
-        reservationPojo.setTrainId(reservation.getTrain().getId());
-        reservationPojo.setTrainName(reservation.getTrain().getName());
+        reservationPojo.setTrain(trainService.mapToPojo(reservation.getTrain()));
         reservationPojo.setUser(userService.mapToPojo(reservation.getUser()));
         return reservationPojo;
     }
@@ -71,6 +73,10 @@ public class ReservationServiceImpl extends ReservationServiceApi {
     public Optional<Reservation> getTicketReservationDetails(Long reservationId) {
 
         return reservationRepository.findById(reservationId);
+    }
+
+    public List<Reservation> getTicketReservationsForSection(long trainId, String sectionName, LocalDate date) {
+        return null;
     }
 
     Reservation changeAllotedUserSeat(Long userId, int seatId) {

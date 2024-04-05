@@ -21,9 +21,11 @@ The user is allocated a seat in the train. Assume the train has only 2 sections,
 
 ## Assumptions
 - Trains have only start and end stations. Intermediate stations not supported
-- Each train runs once per day.
-- Train will have only 2 sections.
-- Each section has a max Seats.
+- Each train runs once per day
+- Train will have only 2 sections
+- Each section has fixed max Seats
 - When user tries to book/reserve ticket, we will check the available trains for the START and END station.
-  - Then, check if the seats available in any train and book it. If no tickets available, then error will be thrown
+  - Then, check if the seats available in any train and book it. If no seats/train available, then error will be thrown
+- Single User can book N number of Tickets (No limit)
+- Request Payloads are valid
 - 

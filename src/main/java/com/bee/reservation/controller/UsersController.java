@@ -1,5 +1,6 @@
 package com.bee.reservation.controller;
 
+import com.bee.reservation.exception.UserAlreadyExistsException;
 import com.bee.reservation.model.Response;
 import com.bee.reservation.model.User;
 import com.bee.reservation.pojo.UserPojo;
@@ -29,13 +30,8 @@ public class UsersController {
     }
 
     @PostMapping("/user")
-    ResponseEntity createUser(@RequestBody UserPojo userPojo) {
-        User user = null;
-        try {
-            user = userService.createUser(userPojo);
-        } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
-        }
+    ResponseEntity createUser(@RequestBody UserPojo userPojo) throws UserAlreadyExistsException {
+        User user = userService.createUser(userPojo);
         return new ResponseEntity(user, HttpStatus.CREATED);
     }
     @GetMapping("/user/{userId}")
