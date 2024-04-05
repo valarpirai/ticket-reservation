@@ -11,7 +11,8 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    Long removeById(Long id);
-
     List<Reservation> findByDateAndScheduleId(LocalDate date, Long scheduleId);
+    List<Reservation> findByTrainIdAndSectionAndDate(long trainId, String section, LocalDate date);
+    boolean existsByTrainIdAndSectionAndDateAndSeatNumber(long trainId, String section, LocalDate date, int seatNumber);
+    Long removeById(Long id);
 }

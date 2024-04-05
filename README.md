@@ -27,5 +27,7 @@ The user is allocated a seat in the train. Assume the train has only 2 sections,
 - When user tries to book/reserve ticket, we will check the available trains for the START and END station.
   - Then, check if the seats available in any train and book it. If no seats/train available, then error will be thrown
 - Single User can book N number of Tickets (No limit)
-- Request Payloads are valid
+- Request Payloads are valid. (Spring boot default payload validation available)
+- Supported Date format 2024-04-01 (yyyy-MM-dd)
+- Authentication & Authorization not enabled (APIs are publicly accessible)
 - 

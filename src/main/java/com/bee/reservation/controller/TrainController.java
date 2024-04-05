@@ -1,5 +1,6 @@
 package com.bee.reservation.controller;
 
+import com.bee.reservation.constants.TrainSections;
 import com.bee.reservation.pojo.TrainPojo;
 import com.bee.reservation.service.TrainServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +20,10 @@ public class TrainController {
     @GetMapping("/trains")
     List<TrainPojo> getAllTrains() {
         return trainService.getAllTrains();
+    }
+
+    @GetMapping("/train/sections")
+    TrainSections[] getAllSections() {
+        return TrainSections.values();
     }
 }

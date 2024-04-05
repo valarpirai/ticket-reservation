@@ -8,6 +8,7 @@ import com.bee.reservation.model.Reservation;
 import com.bee.reservation.model.Schedule;
 import com.bee.reservation.model.Train;
 import com.bee.reservation.pojo.ReservationPojo;
+import com.bee.reservation.pojo.TrainPojo;
 import com.bee.reservation.repository.ReservationRepository;
 import com.bee.reservation.repository.ScheduleRepository;
 import com.bee.reservation.repository.TrainRepository;
@@ -47,8 +48,6 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         reservation.setUser(userService.findOrCreateUser(userPojo));
         reservation.setBookedAt(LocalDateTime.now());
         reservation.setPaidAmount(reservationPojo.getPaidAmount());
-//        Find train name by using from and To
-//        Check tickets available for the train
 
         reservationRepository.save(reservation);
         return reservation;
@@ -67,21 +66,43 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         reservationPojo.setPaidAmount(reservation.getPaidAmount());
         reservationPojo.setTrain(trainService.mapToPojo(reservation.getTrain()));
         reservationPojo.setUser(userService.mapToPojo(reservation.getUser()));
+        reservationPojo.setBookedAt(reservation.getBookedAt());
         return reservationPojo;
     }
 
-    public Optional<Reservation> getTicketReservationDetails(Long reservationId) {
-
+    public Optional<Reservation> getTicketReservationDetail(Long reservationId) {
         return reservationRepository.findById(reservationId);
     }
 
-    public List<Reservation> getTicketReservationsForSection(long trainId, String sectionName, LocalDate date) {
-        return null;
+    public List<ReservationPojo> getTicketReservations(long trainId, String sectionName, LocalDate date) {
+        List<Reservation> reservations = reservationRepository.findByTrainIdAndSectionAndDate(trainId, sectionName, date);
+        List<ReservationPojo> reservationPojos = new ArrayList<ReservationPojo>();
+        for(Reservation reservation: reservations) {
+            reservationPojos.add(mapToPojo(reservation));
+        }
+        return reservationPojos;
     }
 
-    Reservation changeAllotedUserSeat(Long userId, int seatId) {
-//        Check the expected seat is available, then assign it otherwise throw exception
-        return null;
+    public ReservationPojo changeAllottedUserSeat(Long reservationId, int newSeatNumber)
+            throws NotFoundException, SeatNotAvailableException
+    {
+        Optional<Reservation> reservationOpt = getTicketReservationDetail(reservationId);
+        if(reservationOpt.isEmpty()) {
+            throw new NotFoundException("Reservation not found");
+        }
+        Reservation reservation = reservationOpt.get();
+        boolean seatAvailable = reservationRepository.existsByTrainIdAndSectionAndDateAndSeatNumber(
+                reservation.getTrainId(),
+                reservation.getSection(),
+                reservation.getDate(),
+                newSeatNumber);
+        if(!seatAvailable) {
+            throw new SeatNotAvailableException("Requested seat not available");
+        } else {
+            reservation.setSeatNumber(newSeatNumber);
+            reservation.setBookedAt(LocalDateTime.now());
+        }
+        return mapToPojo(reservation);
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -24,6 +25,7 @@ public class ReservationPojo {
     private int seatNumber;
     private LocalTime departureTime;
     private LocalTime arrivalTime;
+    private LocalDateTime bookedAt;
 
     public ReservationPojo() {}
 }
