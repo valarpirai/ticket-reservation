@@ -53,14 +53,17 @@ public class ReservationServiceImpl extends ReservationServiceApi {
 
     public ReservationPojo mapToPojo(Reservation reservation) {
         ReservationPojo reservationPojo = new ReservationPojo();
-        reservationPojo.setId(reservation.getId());
+        reservationPojo.setReservationId(reservation.getId());
         reservationPojo.setFrom(reservation.getSchedule().getStartStation());
         reservationPojo.setTo(reservation.getSchedule().getEndStation());
         reservationPojo.setSection(reservation.getSection());
         reservationPojo.setSeatNumber(reservation.getSeatNumber());
         reservationPojo.setDate(reservation.getDate());
+        reservationPojo.setDepartureTime(reservation.getSchedule().getDepartureTime());
+        reservationPojo.setArrivalTime(reservation.getSchedule().getArrivalTime());
         reservationPojo.setPaidAmount(reservation.getPaidAmount());
         reservationPojo.setTrainId(reservation.getTrain().getId());
+        reservationPojo.setTrainName(reservation.getTrain().getName());
         reservationPojo.setUser(userService.mapToPojo(reservation.getUser()));
         return reservationPojo;
     }

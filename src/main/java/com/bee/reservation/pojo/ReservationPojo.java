@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
+/**
+ * ReservationPojo is used to receive and send data from and to client
+ */
 @Data
 @AllArgsConstructor
 public class ReservationPojo {
@@ -14,10 +18,13 @@ public class ReservationPojo {
     private LocalDate date;
     private UserPojo user;
 
-    private long id;
+    private long reservationId;
     private long trainId;
+    private String trainName;
     private String section;
     private int seatNumber;
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
 
     public ReservationPojo() {}
 }
