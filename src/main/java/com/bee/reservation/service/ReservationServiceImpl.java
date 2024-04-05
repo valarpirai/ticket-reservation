@@ -10,6 +10,7 @@ import com.bee.reservation.pojo.ReservationPojo;
 import com.bee.reservation.repository.ReservationRepository;
 import com.bee.reservation.repository.ScheduleRepository;
 import com.bee.reservation.repository.TrainRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,8 +75,9 @@ public class ReservationServiceImpl extends ReservationServiceApi {
         return null;
     }
 
-    public void deleteReservation(Long reservationId) {
-        reservationRepository.deleteById(reservationId);
+    @Transactional
+    public Long deleteReservation(Long reservationId) {
+        return reservationRepository.removeById(reservationId);
     }
 
     Set<Schedule> findSchedule(ReservationPojo reservationPojo) throws NotFoundException {
@@ -120,17 +122,13 @@ public class ReservationServiceImpl extends ReservationServiceApi {
     }
 
     /**
-     * Find the next available seat in the Specified Train section
+     * Find the next available seat in the Specified Train section.
      * @param reservations
+     * @param section
      * @param maxSeatPerSection
      * @return
      */
     private int findNextAvailableSeat(List<Reservation> reservations, TrainSections section, int maxSeatPerSection) {
-//        Find max seat number
-//            IF count is not matching max seat number
-        //        find missing number and use it
-        // if count == max_seat number
-//            Move to next section do the same
         var seatNos = reservations
                 .stream()
                 .filter(reservation -> reservation.getSection().equalsIgnoreCase(section.name()))
@@ -138,20 +136,20 @@ public class ReservationServiceImpl extends ReservationServiceApi {
                 .collect(Collectors.toList());
 
         logger.info("seatNos =>  " + seatNos.toString());
-        // No Seat available
         if (seatNos.size() == maxSeatPerSection) {
+            // No Seat available
             return -1;
         } else if (seatNos.size() == 0) {
+            // All seats available. Start with 1st seat
             return 1;
-        } else if (Collections.max(seatNos) < maxSeatPerSection) {
-            return Collections.max(seatNos) + 1;
-        } else {
-            // Return available seat from middle (cancelled seats)
-            int xor = 0, i = 0;
-            for (; i < seatNos.size(); i++) {
-                xor = xor ^ i ^ seatNos.get(i);
+        } else if (Collections.max(seatNos) == maxSeatPerSection) {
+            // Return available seat from middle (find previously cancelled seats)
+            for (int i = 1; i <= seatNos.size(); i++) {
+                if (!seatNos.contains(i))
+                    return i;
             }
-            return xor ^ i;
         }
+        // Return next available seat
+        return Collections.max(seatNos) + 1;
     }
 }

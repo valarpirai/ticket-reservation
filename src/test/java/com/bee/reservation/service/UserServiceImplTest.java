@@ -1,6 +1,5 @@
 package com.bee.reservation.service;
 
-
 import com.bee.reservation.exception.UserAlreadyExistsException;
 import com.bee.reservation.pojo.UserPojo;
 
@@ -12,24 +11,13 @@ import static org.junit.Assert.*;
 import com.bee.reservation.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
-
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserServiceImplTest {
 
     @Autowired

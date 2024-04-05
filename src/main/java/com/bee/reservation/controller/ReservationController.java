@@ -49,7 +49,10 @@ public class ReservationController {
 
     @DeleteMapping("/reservation/{reservationId}")
     ResponseEntity bookTicket(@PathVariable Long reservationId) {
-        reservationService.deleteReservation(reservationId);
-        return new ResponseEntity(null, HttpStatus.OK);
+        long deletedId = reservationService.deleteReservation(reservationId);
+        if (deletedId != 0)
+            return new ResponseEntity("Ok", HttpStatus.OK);
+        else
+            return new ResponseEntity("", HttpStatus.NOT_FOUND);
     }
 }
