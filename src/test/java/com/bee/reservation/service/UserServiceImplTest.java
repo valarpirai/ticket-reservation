@@ -28,6 +28,7 @@ public class UserServiceImplTest {
     @BeforeEach
     void init() {
         userRepository.deleteAll();
+        userRepository.flush();
     }
 
     @Test

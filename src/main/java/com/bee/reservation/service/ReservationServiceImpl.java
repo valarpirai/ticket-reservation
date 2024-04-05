@@ -217,7 +217,6 @@ public class ReservationServiceImpl extends ReservationServiceApi {
                 .map(Reservation::getSeatNumber)
                 .collect(Collectors.toList());
 
-        logger.info("seatNos =>  " + seatNos.toString());
         if (seatNos.size() == maxSeatPerSection) {
             // No Seat available
             return -1;

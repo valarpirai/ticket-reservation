@@ -33,6 +33,7 @@ public class ReservationServiceImplTest {
     @BeforeEach
     void init() {
         reservationRepository.deleteAll();
+        reservationRepository.flush();
     }
 
     @Test

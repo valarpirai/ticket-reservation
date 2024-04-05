@@ -20,7 +20,7 @@ public class User {
     private String lastName;
     private String email;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.REMOVE, mappedBy = "user")
     private Set<Reservation> ticketReservations;
 
     public User(String firstName, String lastName, String email ) {
